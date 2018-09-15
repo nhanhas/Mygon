@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+<script>
+
+    var StepsVO = [];
+	jQuery(document).ready(function() { 
+
+        StepsVO = [
+            {
+                id : 0,
+                active : true
+            },
+            {
+                id : 1,
+                active : true
+            },
+            {
+                id : 2,
+                active : true
+            },
+            {
+                id : 3,
+                active : true
+            }
+
+        ];       
+
+        //#1 - Set active breadcrumbs as visible
+        for(var i=0; i < StepsVO.length; i++){
+            if(StepsVO[i].active){
+                $('#step-item-' + StepsVO[i].id).css('display', 'block');            
+            }
+        }        
+        //#2 - Set first as visible (Check what is the next id)
+        for(var i=0; i < StepsVO.length; i++){
+            if(StepsVO[i].active){
+                //#2.2 - Activate first available Step
+                $('#step-item-' + StepsVO[i].id).addClass('step-visited');   
+                $('#step-' + StepsVO[i].id).css('display', 'flex');
+                break;
+            }
+        }
+
+	});
+
+    //#A - Next step function
+    function nextStep(currentId){
+        var nextStepId = -1;
+        
+        //#1 - Check what is the next id
+        for(var i=0; i < StepsVO.length; i++){
+            if(currentId < StepsVO[i].id && StepsVO[i].id && StepsVO[i].active){
+                nextStepId = StepsVO[i].id;
+                break;
+            }
+        }
+
+        //#2.1 - Deactivate current Step        
+        $('#step-' + currentId).css('display', 'none');
+        //#2.2 - Activate next Step
+        $('#step-item-' + nextStepId).addClass('step-visited');
+        $('#step-' + nextStepId).css('display', 'flex');
+
+    }
+
+</script> 
+
+<style>
+    /*TEXT COLORS*/
+    .text-white{
+        color:white;
+    }
+    
+
+    .steps-container{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        overflow: hidden;
+    }
+
+    .step-item{
+        background-color: #e6e6e6;
+        width: 100%;
+        margin: 0 -5px;
+        padding: 10px 0px;
+
+        display:none;/*begin as invisible*/
+    }
+
+    .step-item:not(:first-child), .step-item:not(:last-child){
+        -webkit-clip-path: polygon(95% 0, 100% 50%, 95% 100%, 0% 100%, 5% 50%, 0% 0%);
+        clip-path: polygon(95% 0, 100% 50%, 95% 100%, 0% 100%, 5% 50%, 0% 0%);
+    }
+
+    .step-item:first-child{
+        -webkit-clip-path: polygon(0 0, 0 100%, 95% 100%, 100% 50%, 95% 0);
+        clip-path: polygon(0 0, 0 100%, 95% 100%, 100% 50%, 95% 0);
+    }
+
+    .step-item:last-child{
+        -webkit-clip-path: polygon(95% 0, 100% 50%, 95% 100%, 0% 100%, 5% 50%, 0% 0%); 
+        clip-path: polygon(100% 0%, 100% 50%, 100% 100%, 0% 100%, 5% 50%, 0% 0%);
+    }
+
+   
+    .step-visited{
+        background-color: #808080;
+    }
+
+
+    .step-form{
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        display:none;/*begin as invisible*/
+    }
+
+    .step-btn-next{
+        cursor: pointer;
+        background-color: #2ec66f;
+        width: 220px;
+        padding: 10px;
+        font-size: 20px;
+    }
+
+
+</style>
+
+</head>
+
+<body>
+
+<div id="sumario" style="margin: 50px 240px 0 240px;">
+
+    <!-- Steps -->
+    <div class="steps-container">
+
+        <!-- #TEMPLATE# -->
+        <div id="step-item-0" class="step-item text-center step-visited">
+            <span><i class="fa fa-calendar fa-2x text-white"></i></span>
+        </div>
+        
+        <div id="step-item-1" class="step-item text-center">
+            <span><i class="fa fa-user fa-2x text-white"></i></span>
+        </div>
+
+        <div id="step-item-2" class="step-item text-center">
+            <span><i class="fa fa-calendar fa-2x text-white"></i></span>
+        </div>
+        
+        <div id="step-item-3" class="step-item text-center">
+            <span><i class="fa fa-check-circle fa-2x text-white"></i></span>
+        </div>
+
+    </div>
+
+    <!-- Step Forms -->
+    <div class="step-form-container">
+
+        <!-- Step id 0: How many? -->
+        <div id="step-0" class="step-form">
+            <h3>Quantas pessoas serão?</h3>
+
+            <!-- #TEMPLATE# -->
+            <div id="step-content-0">
+
+            </div>
+
+            <!-- Next button -->
+            <div class="step-btn-next text-white" onclick="nextStep(0)">
+                SEGUINTE
+            </div>
+        </div>
+
+        <!-- Step id 1: When? -->
+        <div id="step-1" class="step-form">
+            <h3>Para quando?</h3>
+
+            <!-- #TEMPLATE# -->
+            <div id="step-content-1">
+
+            </div>
+
+            <!-- Next button -->
+            <div class="step-btn-next text-white" onclick="nextStep(1)">
+                SEGUINTE
+            </div>
+        </div>
+
+    </div>
+ 
+
+<div>
+
+   
+
+</body>	
