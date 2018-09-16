@@ -18,7 +18,8 @@
         StepsVO = [
             {
                 id : 0,
-                active : true
+                active : true,
+                limit : 20 //Limit of clients for this reservation
             },
             {
                 id : 1,
@@ -26,14 +27,31 @@
             },
             {
                 id : 2,
-                active : true
+                active : true,
+                hours : ['13:30', '14:00', '19:10','20:30','21:00'] //Hours available to book
             },
             {
                 id : 3,
                 active : true
+            },
+            {
+                id : 4,
+                active : true
             }
 
         ];       
+
+        //#1 - Set Visible/Invisible Breadcrumbs and step views (based on json)
+        drawForm();
+
+        //#2 - Fullfill dynamic form views (Step 0 - How many?; Step 2 - What time?)
+        drawDynamicForms();
+
+	});
+
+
+    //#A - Draw Available Breadcrumbs and Form views
+    function drawForm(){
 
         //#1 - Set active breadcrumbs as visible
         for(var i=0; i < StepsVO.length; i++){
@@ -50,10 +68,20 @@
                 break;
             }
         }
+    } 
 
-	});
+    //#B - Draw content of dynamic forms
+    function drawDynamicForms(){
 
-    //#A - Next step function
+        //#1 - get step 0 content
+        GET_TEMPLATE_step_0();
+
+        //#2 - get step 2 content
+        GET_TEMPLATE_step_2();
+
+    }
+
+    //#C - Next step function
     function nextStep(currentId){
         var nextStepId = -1;
         
@@ -73,6 +101,50 @@
 
     }
 
+    //#TEMPLATE# - Step 0 - How Many?
+    function GET_TEMPLATE_step_0(){
+        
+        var template = '';
+        //#1 - build list of template
+        for(var i=1; i <= StepsVO[0].limit; i++){
+            var numberOption = i;
+            template += '<div class="step-option-0">'+ numberOption +'</div>'; 
+        }
+
+        //#2 - Draw template
+        var e = document.getElementById('step-content-0');
+        e.innerHTML = template; //replace all html exists in events
+        
+        //#3 - Add click handlers
+        $('.step-option-0').click(function(target){
+            $('.step-option-0').removeClass('step-option-0-selected');
+            $(target.currentTarget).addClass('step-option-0-selected');
+        })
+
+    }
+
+    //#TEMPLATE# - Step 2 - What time?
+    function GET_TEMPLATE_step_2(){
+        
+        var template = '';
+        //#1 - build list of template
+        for(var i=0; i < StepsVO[2].hours.length; i++){
+            var hourOption = StepsVO[2].hours[i];
+            template += '<div class="step-option-2">'+ hourOption +'</div>'; 
+        }
+
+        //#2 - Draw template
+        var e = document.getElementById('step-content-2');
+        e.innerHTML = template; //replace all html exists in events
+        
+        //#3 - Add click handlers
+        $('.step-option-2').click(function(target){
+            $('.step-option-2').removeClass('step-option-2-selected');
+            $(target.currentTarget).addClass('step-option-2-selected');
+        })
+
+    }
+
 </script> 
 
 <style>
@@ -86,13 +158,11 @@
         display: flex;
         flex-direction: row;
         justify-content: space-around;
-        overflow: hidden;
     }
 
     .step-item{
         background-color: #e6e6e6;
         width: 100%;
-        margin: 0 -5px;
         padding: 10px 0px;
 
         display:none;/*begin as invisible*/
@@ -137,6 +207,54 @@
     }
 
 
+    /* STEP 0 CSS */
+    #step-content-0{
+        width:100%;   
+        margin: 30px 0;
+    }
+    .step-option-0{
+        cursor: pointer;
+        text-align: center;
+        width: 100px;
+        height: 50px;
+        border: 1px solid #80808057;
+        display: inline-block;
+        border-radius: 7px;
+        padding-top: 15px;
+        margin: 5px;
+        color: #808080;
+        font-weight: bold;
+    }
+
+    .step-option-0-selected{
+        background-color: #808080;
+        color: white;
+    }
+
+    /* STEP 2 CSS */
+    #step-content-2{
+        width:100%;   
+        margin: 30px 0;
+    }
+    .step-option-2{
+        cursor: pointer;
+        text-align: center;
+        width: 100px;
+        height: 50px;
+        border: 1px solid #80808057;
+        display: inline-block;
+        border-radius: 7px;
+        padding-top: 15px;
+        margin: 5px;
+        color: #808080;
+        font-weight: bold;
+    }
+
+    .step-option-2-selected{
+        background-color: #808080;
+        color: white;
+    }
+
 </style>
 
 </head>
@@ -145,23 +263,26 @@
 
 <div id="sumario" style="margin: 50px 240px 0 240px;">
 
-    <!-- Steps -->
+    <!-- Steps Breadcrumb-->
     <div class="steps-container">
 
-        <!-- #TEMPLATE# -->
         <div id="step-item-0" class="step-item text-center step-visited">
-            <span><i class="fa fa-calendar fa-2x text-white"></i></span>
+            <span><i class="fa fa-users fa-2x text-white"></i></span>
         </div>
         
         <div id="step-item-1" class="step-item text-center">
-            <span><i class="fa fa-user fa-2x text-white"></i></span>
+            <span><i class="fa fa-calendar fa-2x text-white"></i></span>
         </div>
 
         <div id="step-item-2" class="step-item text-center">
-            <span><i class="fa fa-calendar fa-2x text-white"></i></span>
+            <span><i class="fa fa-clock-o fa-2x text-white"></i></span>
         </div>
         
         <div id="step-item-3" class="step-item text-center">
+            <span><i class="fa fa-address-card-o fa-2x text-white"></i></span>
+        </div>
+
+        <div id="step-item-4" class="step-item text-center">
             <span><i class="fa fa-check-circle fa-2x text-white"></i></span>
         </div>
 
@@ -175,8 +296,8 @@
             <h3>Quantas pessoas serão?</h3>
 
             <!-- #TEMPLATE# -->
-            <div id="step-content-0">
-
+            <div id="step-content-0" >
+                
             </div>
 
             <!-- Next button -->
@@ -197,6 +318,52 @@
             <!-- Next button -->
             <div class="step-btn-next text-white" onclick="nextStep(1)">
                 SEGUINTE
+            </div>
+        </div>
+
+        <!-- Step id 2: What time? -->
+        <div id="step-2" class="step-form">
+            <h3>A que horas?</h3>
+
+            <!-- #TEMPLATE# -->
+            <div id="step-content-2">
+
+            </div>
+
+            <!-- Next button -->
+            <div class="step-btn-next text-white" onclick="nextStep(2)">
+                SEGUINTE
+            </div>
+        </div>
+
+        <!-- Step id 3: Personal data -->
+        <div id="step-3" class="step-form">
+            <h3>Para concluir basta preencher os dados pessoais:</h3>
+            <span>Já tem uma conta Mygon? <a href="">Clique aqui</a></span>
+            
+            <!-- #TEMPLATE# -->
+            <div id="step-content-3">
+
+            </div>
+
+            <!-- Next button -->
+            <div class="step-btn-next text-white" onclick="nextStep(3)">
+                SEGUINTE
+            </div>
+        </div>
+
+        <!-- Step id 4: Aditional Data -->
+        <div id="step-4" class="step-form">
+            <h3>Para uma comunicação mais fácil deixe o seu número de telemóvel e alguma informação relevante para o comerciante.</h3>
+                        
+            <!-- #TEMPLATE# -->
+            <div id="step-content-4">
+
+            </div>
+
+            <!-- Next button -->
+            <div class="step-btn-next text-white">
+                RESERVAR
             </div>
         </div>
 
