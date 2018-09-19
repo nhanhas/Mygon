@@ -9,6 +9,12 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/locale/pt.js"></script>
+
+    <script type="text/javascript" src="libs/date-picker/js/bootstrap-datetimepicker.min.js"></script>
+    <link rel="stylesheet" href="libs/date-picker/css/bootstrap-datetimepicker.min.css" />
+    
 
 <script>
 
@@ -152,6 +158,14 @@
     .text-white{
         color:white;
     }
+
+    .text-green{
+        color: #2ec66f;
+    }
+
+    .text-gray-light{
+        color:#808080de;
+    }
     
 
     .steps-container{
@@ -231,6 +245,12 @@
         color: white;
     }
 
+    /* STEP 1 CSS */
+    #step-content-1{
+        width:80%;   
+        margin: 30px 0;
+    }
+
     /* STEP 2 CSS */
     #step-content-2{
         width:100%;   
@@ -254,6 +274,27 @@
         background-color: #808080;
         color: white;
     }
+
+    /* STEP 3 CSS */
+    #step-content-3{
+        width: 100%;
+    }
+
+    .input-form{
+        border-style: none;
+        border-bottom: 1px solid #80808080;
+        width: 100%;
+    }
+    .input-form:focus{
+        outline: none;
+        
+    }
+
+    .form-input-custom{
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    
 
 </style>
 
@@ -312,7 +353,24 @@
 
             <!-- #TEMPLATE# -->
             <div id="step-content-1">
-
+                <div style="overflow:hidden;">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div id="datetimepicker"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <script type="text/javascript">
+                        $(function () {
+                            $('#datetimepicker').datetimepicker({
+                                inline: true,
+                                locale: 'ru',
+                                format: 'D'
+                            });
+                        });
+                    </script>
+                </div>
             </div>
 
             <!-- Next button -->
@@ -337,12 +395,23 @@
         </div>
 
         <!-- Step id 3: Personal data -->
-        <div id="step-3" class="step-form">
+        <div id="step-3" class="step-form text-gray-light">
             <h3>Para concluir basta preencher os dados pessoais:</h3>
-            <span>Já tem uma conta Mygon? <a href="">Clique aqui</a></span>
+            <span>Já tem uma conta Mygon? <a class="text-green" href="">Clique aqui</a></span>
             
             <!-- #TEMPLATE# -->
-            <div id="step-content-3">
+            <div class="row" id="step-content-3">
+                <div class="col-xs-8 col-xs-offset-2 form-input-custom">
+                    <input type="name" class="input-form" id="name" placeholder="Name">
+                </div>
+
+                <div class="col-xs-8 col-xs-offset-2 form-input-custom">
+                    <input type="email" class="input-form" id="email" placeholder="E-mail">
+                </div>
+
+                <div class="col-xs-8 col-xs-offset-2 form-input-custom">
+                    <input type="password" class="input-form" id="password" placeholder="Password">
+                </div>
 
             </div>
 
@@ -353,7 +422,7 @@
         </div>
 
         <!-- Step id 4: Aditional Data -->
-        <div id="step-4" class="step-form">
+        <div id="step-4" class="step-form text-gray-light">
             <h3>Para uma comunicação mais fácil deixe o seu número de telemóvel e alguma informação relevante para o comerciante.</h3>
                         
             <!-- #TEMPLATE# -->
