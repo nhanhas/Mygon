@@ -21,7 +21,17 @@
     var StepsVO = [];
 	jQuery(document).ready(function() { 
 
-        StepsVO = [
+        //#0 - Get reservation config from cookie
+        cookieValue = getCookie('values');
+        if(cookieValue){
+            cookieValue = JSON.parse(cookieValue);
+            console.log(cookieValue);
+            //#0.1 - Set up Steps with received 
+            StepsVO = cookieValue;
+          
+        }else{
+            //This else is a dummy data
+            StepsVO = [
             {
                 id : 0,
                 active : true,
@@ -47,11 +57,37 @@
 
         ];       
 
+        }
+
+
+       
         //#1 - Set Visible/Invisible Breadcrumbs and step views (based on json)
         drawForm();
 
         //#2 - Fullfill dynamic form views (Step 0 - How many?; Step 2 - What time?)
         drawDynamicForms();
+
+        //#3 - Fulfiil form with cookie values
+        try {
+
+            //#3.1 - if Step 3 is loggedin
+            if(StepsVO[3].loggedin){
+                $('#email').css('display', 'none');
+                $('#password').css('display', 'none');
+                $('#new-account').css('display', 'none');
+            }
+
+            $('#name').val(StepsVO[3].name);         //Step 3
+            $('#email').val(StepsVO[3].email);       //Step 3
+            
+            $('#phone').val(StepsVO[4].phoneNumber); //Step 4
+            $('#notes').val(StepsVO[4].comment);     //Step 4
+        } catch (error) {
+            console.log('Could not load Steps from cookie');
+        }   
+        
+        //#4 - Setup handler for day click
+        //On dive datetimepicker init()
 
 	});
 
@@ -105,6 +141,8 @@
         $('#step-item-' + nextStepId).addClass('step-visited');
         $('#step-' + nextStepId).css('display', 'flex');
 
+        setupHandlerDateTime();
+
     }
 
     //#TEMPLATE# - Step 0 - How Many?
@@ -125,6 +163,10 @@
         $('.step-option-0').click(function(target){
             $('.step-option-0').removeClass('step-option-0-selected');
             $(target.currentTarget).addClass('step-option-0-selected');
+            
+            //#3.1 - mark input with clicked value
+            var clickedValue = parseInt($(target.currentTarget).text());
+            $('#how-many').val(clickedValue);
 
             //#4 - proceed
             nextStep(0);
@@ -150,6 +192,10 @@
         $('.step-option-2').click(function(target){
             $('.step-option-2').removeClass('step-option-2-selected');
             $(target.currentTarget).addClass('step-option-2-selected');
+
+            //#3.1 - mark input with clicked value
+            var clickedValue = $(target.currentTarget).text();
+            $('#what-time').val(clickedValue);
 
             //#4 - proceed
             nextStep(2);
@@ -198,8 +244,77 @@
         //#1.2 - Activate next Step
         $('#step-item-' + targetId).addClass('step-visited');
         $('#step-' + targetId).css('display', 'flex');
+
+        setupHandlerDateTime();
     }
 
+    //#F - Function to Get Browser Cookies
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
+    //#G - Book the reservation
+    function bookReservation(){
+        var reservation = {
+            howMany: 0,
+            when : '',
+            whatTime : '',
+            name : '',
+            email : '',
+            password : '',
+            phonePrefix : '',
+            phone : '',
+            comment : ''
+        };
+        
+        //#Step 0 - How many?
+        reservation.howMany = $('#how-many').val();
+        
+        //#Step 1 - When?
+        var date = $('#datetimepicker').data('DateTimePicker').date();
+        date = date.toISOString().substring(0, 10);
+        reservation.when = date;
+
+        //#Step 2 - What Time?
+        reservation.whatTime = $('#what-time').val();
+
+        //#Step 3 - Personal data
+        reservation.name = $('#name').val();
+        reservation.email = $('#email').val();
+        reservation.password = $('#password').val();
+
+        //#Step 4 - Aditional data
+        reservation.phonePrefix = $('#phone-prefix').val();
+        reservation.phone = $('#phone').val();
+        reservation.comment = $('#notes').val();
+
+        //Form result
+        console.log(reservation);
+        
+    }
+
+    //#H - Set handler of datetimepicker
+    function setupHandlerDateTime(){
+        //#1 - reset handler
+        $( "#datetimepicker .day" ).unbind();
+
+        //#2 - bind it again
+        $('#datetimepicker .day').click(function(){
+            nextStep(1);
+        });
+    }
+    
 </script> 
 
 <style>
@@ -276,6 +391,15 @@
         font-size: 20px;
     }
 
+    .close-btn{        
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        color: #808080;
+    }
+    .close-btn span{
+        cursor: pointer;
+    }
 
     /* STEP 0 CSS */
     #step-content-0{
@@ -393,7 +517,11 @@
 
 <body>
 
-<div id="sumario" style="margin: 50px 240px 0 240px;">
+<div id="sumario" style="margin: 50px 60px 0 60px;">
+
+    <div class="close-btn">
+        <span onclick="parent.closeBookingForm()"><i class="fa fa-times fa-2x"></i></span>
+    </div>
 
     <!-- Steps Breadcrumb-->
     <div class="steps-container">
@@ -428,6 +556,7 @@
             <h3>Quantas pessoas serão?</h3>
 
             <!-- #TEMPLATE# -->
+            <input type="hidden" id="how-many" value="0">
             <div id="step-content-0" >
                 
             </div>
@@ -448,26 +577,30 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-xs-12">
-                                <div id="datetimepicker"></div>
+                                <div id="datetimepicker">
+                                    <input type='hidden' class="form-control" />
+                                </div>
                             </div>
                         </div>
                     </div>
                     <script type="text/javascript">
                         $(function () {
+                            //#1 - Setup Component
                             $('#datetimepicker').datetimepicker({
                                 inline: true,
                                 locale: 'ru',
-                                format: 'D'
+                                format: 'D',
                             });
+                            
                         });
                     </script>
                 </div>
             </div>
 
-            <!-- Next button -->
+            <!-- Next button 
             <div class="step-btn-next text-white" onclick="nextStep(1)">
                 SEGUINTE
-            </div>
+            </div>-->
         </div>
 
         <!-- Step id 2: What time? -->
@@ -475,6 +608,7 @@
             <h3>A que horas?</h3>
 
             <!-- #TEMPLATE# -->
+            <input type="hidden" id="what-time" value="0">
             <div id="step-content-2">
 
             </div>
@@ -488,7 +622,7 @@
         <!-- Step id 3: Personal data -->
         <div id="step-3" class="step-form text-gray-light">
             <h3>Para concluir basta preencher os dados pessoais:</h3>
-            <span>Já tem uma conta Mygon? <a class="text-green" href="">Clique aqui</a></span>
+            <span id="new-account">Já tem uma conta Mygon? <a class="text-green" href="">Clique aqui</a></span>
             
             <div class="row" id="step-content-3">
                 <div class="col-xs-8 col-xs-offset-2 form-input-custom">
@@ -533,7 +667,7 @@
             </div>
 
             <!-- Next button -->
-            <div class="step-btn-finish text-white disabled">
+            <div class="step-btn-finish text-white disabled" onclick="bookReservation()">
                 RESERVAR
             </div>
         </div>
