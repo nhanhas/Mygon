@@ -40,7 +40,8 @@
             {
                 id : 1,
                 active : true,                
-                disabledDates : [new Date('2018-10-20'), new Date('2018-10-27')]
+                disabledDates : [new Date('2018-10-20'), new Date('2018-10-27')],
+                daysOfWeekDisabled : [1, 2]
             },
             {
                 id : 2,
@@ -104,7 +105,8 @@
             locale: 'ru',
             format: 'D',
             minDate : new Date(),
-            disabledDates : StepsVO[1].disabledDates
+            disabledDates : StepsVO[1].disabledDates,
+            daysOfWeekDisabled : StepsVO[1].daysOfWeekDisabled
         });
 
 	});
