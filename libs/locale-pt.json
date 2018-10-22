@@ -1,0 +1,16 @@
+{
+    "STEP_0_TITLE" : "sdasdadsQuantas pessoas serão?",
+    "STEP_1_TITLE" : "Para quando?",
+    "STEP_2_TITLE" : "A que horas?",
+    "STEP_3_TITLE" : "Para concluir basta preencher os dados pessoais:",
+    "STEP_3_SUBTITLE" : "Já tem uma conta Mygon?",
+    "STEP_3_CLICKHERE" : "Clique aqui",
+    "STEP_3_FORM_NAME" : "Nome",
+    "STEP_3_FORM_EMAIL" : "E-mail",
+    "STEP_3_FORM_PASSWORD" : "Password",
+    "STEP_4_TITLE" : "Para uma comunicação mais fácil deixe o seu número de telemóvel e alguma informação relevante para o comerciante.",
+    "STEP_4_FORM_PHONE" : "Telemóvel",
+    "STEP_4_FORM_COMMENTS" : "Notas para o comerciante...",
+    "STEP_4_FORM_THERMS" : "I ́ve read the <a class=\"text-green\">Privacy Policy</a> settings and i accept to receive news, comunications and promotions from MyGon",
+    "STEP_NEXT_BTN" : "SEGUINTE"
+}

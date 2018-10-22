@@ -18,8 +18,54 @@
 
 <script>
 
+    var locales_PT = {
+            "STEP_0_TITLE" : "Quantas pessoas serão?",
+            "STEP_1_TITLE" : "Para quando?",
+            "STEP_2_TITLE" : "A que horas?",
+            "STEP_3_TITLE" : "Para concluir basta preencher os dados pessoais:",
+            "STEP_3_SUBTITLE" : "Já tem uma conta Mygon? <a class=\"text-green\" href=\"\">Clique aqui</a>",
+            "STEP_3_FORM_NAME" : "Nome",
+            "STEP_3_FORM_EMAIL" : "E-mail",
+            "STEP_3_FORM_PASSWORD" : "Password",
+            "STEP_4_TITLE" : "Para uma comunicação mais fácil deixe o seu número de telemóvel e alguma informação relevante para o comerciante.",
+            "STEP_4_FORM_PHONE" : "Telemóvel",
+            "STEP_4_FORM_COMMENTS" : "Notas para o comerciante...",
+            "STEP_4_FORM_THERMS" : "Li e aceito a <a class=\"text-green\">Política de privacidade</a> e aceito receber novidades, comunicações e promoções da MyGon",
+            "STEP_NEXT_BTN" : "SEGUINTE",
+            "STEP_RESERVE_BTN" : "RESERVAR"
+        };
+
+    var locales_EN = {
+            "STEP_0_TITLE" : "How many?",
+            "STEP_1_TITLE" : "When?",
+            "STEP_2_TITLE" : "What time?",
+            "STEP_3_TITLE" : "Fulfill personal data to complete:",
+            "STEP_3_SUBTITLE" : "Already have a Mygon account? <a class=\"text-green\" href=\"\">Click here</a>",
+            "STEP_3_FORM_NAME" : "Name",
+            "STEP_3_FORM_EMAIL" : "E-mail",
+            "STEP_3_FORM_PASSWORD" : "Password",
+            "STEP_4_TITLE" : "For easier communication leave your mobile phone number and some information relevant to the merchant.",
+            "STEP_4_FORM_PHONE" : "Mobile",
+            "STEP_4_FORM_COMMENTS" : "Notes for merchant...",
+            "STEP_4_FORM_THERMS" : "I ́ve read the <a class=\"text-green\">Privacy Policy</a> settings and i accept to receive news, comunications and promotions from MyGon",
+            "STEP_NEXT_BTN" : "NEXT",
+            "STEP_RESERVE_BTN" : "BOOK NOW"
+        };
+
+    var locales = undefined
+    
     var StepsVO = [];
 	jQuery(document).ready(function() { 
+
+        //Get Language params
+        var urlParams = new URLSearchParams(window.location.search);
+        var lang = urlParams.get('lang');
+        if( lang === 'en' ){
+            //#0.2 - get locales
+            locales = locales_EN;
+        }else{
+            locales = locales_PT;
+        }
 
         //#0 - Get reservation config from cookie
         cookieValue = getCookie('values');
@@ -28,7 +74,10 @@
             console.log(cookieValue);
             //#0.1 - Set up Steps with received 
             StepsVO = cookieValue;
-          
+
+           
+           
+
         }else{
             //This else is a dummy data
             StepsVO = [
@@ -84,6 +133,12 @@
                 //otherwise hide name input in step 4
                 $('#name_logged').css('display', 'none');
             }
+            
+            //#3.1.2 - Hide therms if logged
+            if(StepsVO[3].loggedin){
+                acceptTherms();
+                $('.therms').css('display', 'none');
+            }
 
             $('#phone').val(StepsVO[4].phoneNumber); //Step 4
             $('#notes').val(StepsVO[4].comment);     //Step 4
@@ -97,8 +152,7 @@
         //#2 - Fullfill dynamic form views (Step 0 - How many?; Step 2 - What time?)
         drawDynamicForms();
 
-       
-        
+               
         //#4 - Setup dateTime picker
         $('#datetimepicker').datetimepicker({
             inline: true,
@@ -109,8 +163,45 @@
             daysOfWeekDisabled : StepsVO[1].daysOfWeekDisabled
         });
 
+        
+        //#5 - Translate
+        $('#step-0-title').text( getLocale('STEP_0_TITLE') );
+        $('#step-1-title').text( getLocale('STEP_1_TITLE') );
+        $('#step-2-title').text( getLocale('STEP_2_TITLE') );
+        $('#step-3-title').text( getLocale('STEP_3_TITLE') );
+        $('#new-account').html( getLocale('STEP_3_SUBTITLE') );
+
+        $('#name').attr('placeholder', ( getLocale('STEP_3_FORM_NAME') ));
+        $('#email').attr('placeholder', ( getLocale('STEP_3_FORM_EMAIL') ));
+        $('#password').attr('placeholder', ( getLocale('STEP_3_FORM_PASSWORD') ));
+
+        $('#step-4-title').text( getLocale('STEP_4_TITLE') );
+        $('#name_logged').attr('placeholder',( getLocale('STEP_3_FORM_NAME') ));
+        $('#phone').attr('placeholder',( getLocale('STEP_4_FORM_PHONE') ));
+        $('#notes').attr('placeholder',( getLocale('STEP_4_FORM_COMMENTS') ));
+
+        $('#therms-span').html( getLocale('STEP_4_FORM_THERMS') );
+
+
+        $('#step-3-next').text( getLocale('STEP_NEXT_BTN') );
+        $('#step-4-reserve').text( getLocale('STEP_RESERVE_BTN') );
+
+        //#6 - Check for cookie form
+        cookieFormValue = getCookie('form');
+        if(cookieFormValue){
+            cookieFormValue = JSON.parse(cookieFormValue);
+
+            //#6.1 - set form with last cookie value
+            setFormValue(cookieFormValue);
+
+        }
+
 	});
 
+    //#LOCALE
+    function getLocale(key){
+        return locales[key];
+    }
 
     //#A - Draw Available Breadcrumbs and Form views
     function drawForm(){
@@ -145,6 +236,7 @@
 
     //#C - Next step function
     function nextStep(currentId){
+        
         var nextStepId = -1;
         
         //#1 - Check what is the next id
@@ -161,7 +253,13 @@
         $('#step-item-' + nextStepId).addClass('step-visited');
         $('#step-' + nextStepId).css('display', 'flex');
 
+        //#0 - persist Cookie value
+        setFormValueCookie();
+
         setupHandlerDateTime();
+        
+        
+
 
     }
 
@@ -201,7 +299,7 @@
         //#1 - build list of template
         for(var i=0; i < StepsVO[2].hours.length; i++){
             var hourOption = StepsVO[2].hours[i];
-            template += '<div class="step-option-2">'+ hourOption +'</div>'; 
+            template += '<div class="step-option-2" value="'+ hourOption +'">'+ hourOption +'</div>'; 
         }
 
         //#2 - Draw template
@@ -249,7 +347,7 @@
 
     //#E - Navigate to Step
     function navigateToStep(targetId){
-
+       
         //#1 - deactivate the greater ids
         for(var i=0; i < StepsVO.length; i++){
             if(targetId < StepsVO[i].id && StepsVO[i].id && StepsVO[i].active){
@@ -266,6 +364,9 @@
         $('#step-' + targetId).css('display', 'flex');
 
         setupHandlerDateTime();
+
+         //#0 - persist Cookie value
+         setFormValueCookie();
     }
 
     //#F - Function to Get Browser Cookies
@@ -286,6 +387,32 @@
 
     //#G - Book the reservation
     function bookReservation(){
+        setFormValueCookie();
+        
+        //#1 - get Form values
+        var reservation = getFormValue();
+        
+        console.log(reservation);
+    }
+
+    //#H - Set handler of datetimepicker
+    function setupHandlerDateTime(){
+        //#1 - reset handler
+        $( "#datetimepicker .day" ).unbind();
+
+        //#2 - bind it again
+        $('#datetimepicker .day').click(function(){
+            nextStep(1);
+            
+            setTimeout(function(){
+                setFormValueCookie();    
+            })
+            
+        });
+    }
+    
+    //#I - get Form
+    function getFormValue(){
         var reservation = {
             howMany: 0,
             when : '',
@@ -321,22 +448,58 @@
         reservation.phone = $('#phone').val();
         reservation.comment = $('#notes').val();
 
-        //Form result
-        console.log(reservation);
+        return reservation;
+    }
+
+    //#J set Form with cookie
+    function setFormValue(reservationCookie){
+
+        //#Step 0 - How many?
+        $('#how-many').val(reservationCookie.howMany);
+        $($('.step-option-0')[reservationCookie.howMany - 1]).addClass('step-option-0-selected')
         
+        //#Step 1 - When?
+        $('#datetimepicker').data('DateTimePicker').date(new Date(reservationCookie.when));
+       
+
+        //#Step 2 - What Time?
+        $('#what-time').val(reservationCookie.whatTime);
+        $('.step-option-2[value="'+reservationCookie.whatTime+'"]').addClass('step-option-2-selected')
+
+        //#Step 3 - Personal data
+        $('#name').val(reservationCookie.name);
+        $('#email').val(reservationCookie.email);
+        $('#password').val(reservationCookie.password);
+
+        //#Step 4 - Aditional data
+        $('#name_logged').val(reservationCookie.nameLogged);
+        $('#phone-prefix').val(reservationCookie.phonePrefix);
+        $('#phone').val(reservationCookie.phone);
+        $('#notes').val(reservationCookie.comment);
     }
 
-    //#H - Set handler of datetimepicker
-    function setupHandlerDateTime(){
-        //#1 - reset handler
-        $( "#datetimepicker .day" ).unbind();
+    //#K - Persist Form Values
+    function setFormValueCookie(){
+        //#1 - Get form Value
+        var formValue = getFormValue();
+        
+        //Form result
+        console.log(formValue);
 
-        //#2 - bind it again
-        $('#datetimepicker .day').click(function(){
-            nextStep(1);
-        });
+        setCookie('form', JSON.stringify(formValue));
+
+
+
     }
-    
+
+    //#L - Set cookie value
+    function setCookie(cname, cvalue, exdays) {
+      var d = new Date();
+      d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+      var expires = "expires=" + d.toUTCString();
+      document.cookie = cname + "=" + cvalue + "; " + expires + "; " + "path=/";
+    }
+
 </script> 
 
 <style>
@@ -477,8 +640,25 @@
         color: white;
     }
 
+   
+
     .day.disabled ,.prev.disabled{
-        background-color: #dcdcdc75 !important;
+        background-color: #dcdcdc1c !important;
+        color: #7777772b !important;
+    }
+
+     .day.today{
+        color: #2ec66f !important;
+    }
+
+    .day.active{
+        background-color: red !important;
+        color:white !important;
+    }
+
+    .day:hover{
+        background-color: red !important;
+        color:white !important;
     }
 
     /* STEP 3 CSS */
@@ -596,7 +776,7 @@
 
         <!-- Step id 0: How many? -->
         <div id="step-0" class="step-form">
-            <h3>Quantas pessoas serão?</h3>
+            <h3 id="step-0-title">Quantas pessoas?</h3>
 
             <!-- #TEMPLATE# -->
             <input type="hidden" id="how-many" value="0">
@@ -612,7 +792,7 @@
 
         <!-- Step id 1: When? -->
         <div id="step-1" class="step-form">
-            <h3>Para quando?</h3>
+            <h3 id="step-1-title">Para quando?</h3>
 
             <!-- #TEMPLATE# -->
             <div id="step-content-1">
@@ -643,7 +823,7 @@
 
         <!-- Step id 2: What time? -->
         <div id="step-2" class="step-form">
-            <h3>A que horas?</h3>
+            <h3 id="step-2-title">A que horas?</h3>
 
             <!-- #TEMPLATE# -->
             <input type="hidden" id="what-time" value="0">
@@ -659,8 +839,8 @@
 
         <!-- Step id 3: Personal data -->
         <div id="step-3" class="step-form text-gray-light">
-            <h3>Para concluir basta preencher os dados pessoais:</h3>
-            <span id="new-account">Já tem uma conta Mygon? <a class="text-green" href="">Clique aqui</a></span>
+            <h3 id="step-3-title">Para concluir basta preencher os dados pessoais:</h3>
+            <span id="new-account">Já tem uma conta Mygon? <a class="text-green" id="new-account-link" href="">Clique aqui</a></span>
             
             <div class="row" id="step-content-3">
                 <div class="col-xs-8 col-xs-offset-2 form-input-custom">
@@ -678,14 +858,14 @@
             </div>
 
             <!-- Next button -->
-            <div class="step-btn-next text-white" onclick="nextStep(3)">
+            <div id="step-3-next" class="step-btn-next text-white" onclick="nextStep(3)">
                 SEGUINTE
             </div>
         </div>
 
         <!-- Step id 4: Aditional Data -->
         <div id="step-4" class="step-form text-gray-light">
-            <h3>Para uma comunicação mais fácil deixe o seu número de telemóvel e alguma informação relevante para o comerciante.</h3>
+            <h3 id="step-4-title">Para uma comunicação mais fácil deixe o seu número de telemóvel e alguma informação relevante para o comerciante.</h3>
                         
             <div id="step-content-4">
 
@@ -941,17 +1121,20 @@
                 </div>
 
                 <div>
-                    <input type="text" class="input-form-note" id="notes" placeholder="Nota para o comerciante...">    
+                    <input type="text" class="input-form-note" id="notes" placeholder="Notas para o comerciante...">    
                 </div>         
                 
                 <div class="therms">
-                    <span><i id="therms-and-conditions" data-accepted="false" class="fa fa-square-o fa-lg" onclick="acceptTherms()"></i>&nbsp;I ́ve read the <a class="text-green">Privacy Policy</a> settings and i accept to receive news, comunications and promotions from MyGon</span>   
+                    <span>
+                        <i id="therms-and-conditions" data-accepted="false" class="fa fa-square-o fa-lg" onclick="acceptTherms()"></i>
+                        <span id="therms-span">&nbsp;I ́ve read the <a class="text-green">Privacy Policy</a> settings and i accept to receive news, comunications and promotions from MyGon</span>
+                    </span>   
                 </div> 
 
             </div>
 
             <!-- Next button -->
-            <div class="step-btn-finish text-white disabled" onclick="bookReservation()">
+            <div id="step-4-reserve" class="step-btn-finish text-white disabled" onclick="bookReservation()">
                 RESERVAR
             </div>
         </div>
