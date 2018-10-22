@@ -286,7 +286,9 @@
         //#2.2 - Activate next Step
         $('#step-item-' + nextStepId).addClass('step-visited');
         $('#step-' + nextStepId).css('display', 'flex');
+
         thecurrent=nextStepId+1;
+
         //  ga('send', 'event', "reserve_widget", "step_finished", currentId);
         gtag('event', "reserve_widget", {  'event_category': "step_finished",'event_label': "step",  'value': currentId});
         gtag('event', "reserve_widget", {  'event_category': "step_started",'event_label': "step",  'value': nextStepId});
@@ -296,6 +298,7 @@
         //#0 - persist Cookie value
         setFormValueCookie();
 
+        setBreadCrumb(nextStepId);
     }
 
     //#TEMPLATE# - Step 0 - How Many?
@@ -409,6 +412,9 @@
 
         //#0 - persist Cookie value
         setFormValueCookie();
+
+        //#Reset bread crumb values
+        setBreadCrumb(targetId);
     }
 
     //#F - Function to Get Browser Cookies
@@ -569,6 +575,42 @@
       document.cookie = cname + "=" + cvalue + "; " + expires + "; " + "path=/";
     }
 
+    //#M - Populate steps with value
+    function setBreadCrumb(targetStep){
+        var formValue = getFormValue();
+
+        //#1 - iterate to reset or add info
+        for(var i=0; i < StepsVO.length; i++){
+            //#1.1 - clean
+            $('#step-item-value-' + i).css('display', 'none');
+            $('#step-item-value-' + i).text('');
+            $('#step-item-fa-' + i).addClass('fa-2x');
+
+            //#step 0
+            if(i === 0 && i < targetStep  && StepsVO[i].active && formValue.howMany){
+                $('#step-item-value-' + i).css('display', 'block');
+                $('#step-item-value-' + i).text(formValue.howMany);
+                $('#step-item-fa-' + i).removeClass('fa-2x');
+            }
+            //#step 1
+            if(i === 1 && i < targetStep && StepsVO[i].active && formValue.when){
+                $('#step-item-value-' + i).css('display', 'block');
+                $('#step-item-value-' + i).text(formValue.when);
+                $('#step-item-fa-' + i).removeClass('fa-2x');
+            }
+            //#step 2
+            if(i === 2 && i < targetStep && StepsVO[i].active && formValue.whatTime){
+                $('#step-item-value-' + i).css('display', 'block');
+                $('#step-item-value-' + i).text(formValue.whatTime);
+                $('#step-item-fa-' + i).removeClass('fa-2x');
+            }
+            
+
+            
+        }
+
+    }
+
 </script>
 
 <style>
@@ -602,6 +644,7 @@
     }
 
     .step-item{
+        max-height: 50px;
         background-color: #e6e6e6;
         width: 100%;
         padding: 10px 0px;
@@ -626,10 +669,16 @@
         clip-path: polygon(100% 0%, 100% 50%, 100% 100%, 0% 100%, 5% 50%, 0% 0%);
     }
 
+    .step-item-value{
+        color:white;
+        display: none;
+    }
 
     .step-visited{
         background-color: #808080;
         pointer-events: initial;
+        display: flex !important;
+        flex-direction: column;
     }
 
 
@@ -820,13 +869,16 @@
    <!-- Steps Breadcrumb-->
    <div class="steps-container">
       <div id="step-item-0" class="step-item text-center step-visited" onclick="navigateToStep(0)">
-         <span><i class="fa fa-users fa-2x text-white"></i></span>
+         <span><i id ="step-item-fa-0" class="fa fa-users fa-2x text-white"></i></span>
+         <span id="step-item-value-0" class="step-item-value">2</span>
       </div>
       <div id="step-item-1" class="step-item text-center" onclick="navigateToStep(1)">
-         <span><i class="fa fa-calendar fa-2x text-white"></i></span>
+         <span><i id ="step-item-fa-1" class="fa fa-calendar fa-2x text-white"></i></span>
+         <span id="step-item-value-1" class="step-item-value">20 Out Quarta</span>
       </div>
       <div id="step-item-2" class="step-item text-center" onclick="navigateToStep(2)">
-         <span><i class="fa fa-clock-o fa-2x text-white"></i></span>
+         <span><i id ="step-item-fa-2" class="fa fa-clock-o fa-2x text-white"></i></span>
+         <span id="step-item-value-2" class="step-item-value">12:50</span>
       </div>
       <div id="step-item-3" class="step-item text-center" onclick="navigateToStep(3)">
          <span><i class="fa fa-address-card-o fa-2x text-white"></i></span>
