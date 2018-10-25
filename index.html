@@ -32,7 +32,7 @@
             "STEP_0_TITLE" : "Quantas pessoas serão?",
             "STEP_1_TITLE" : "Para quando?",
             "STEP_2_TITLE" : "A que horas?",
-            "STEP_3_TITLE" : "Para concluir basta preencheres os dados pessoais:",
+            "STEP_3_TITLE" : "Para concluir regista-te gratuitamente na Mygon.",
             "STEP_3_SUBTITLE" : "Já tens uma conta Mygon? <span class='text-green newlogin' style='cursor:pointer'>Clica aqui</a>",
             "STEP_3_FORM_NAME" : "Nome",
             "STEP_3_FORM_EMAIL" : "E-mail",
@@ -49,6 +49,23 @@
             "STEP_0_TITLE" : "How many?",
             "STEP_1_TITLE" : "When?",
             "STEP_2_TITLE" : "What time?",
+            "STEP_3_TITLE" : "To complete the booking, register for free in Mygon.",
+            "STEP_3_SUBTITLE" : "Already have a Mygon account? <span class='text-green newlogin' style='cursor:pointer'>Click here</span>",
+            "STEP_3_FORM_NAME" : "Name",
+            "STEP_3_FORM_EMAIL" : "E-mail",
+            "STEP_3_FORM_PASSWORD" : "Choose a password",
+            "STEP_4_TITLE" : "For easier communication leave your mobile phone number and some information relevant to the merchant.",
+            "STEP_4_FORM_PHONE" : "Mobile",
+            "STEP_4_FORM_COMMENTS" : "Notes for merchant...",
+            "STEP_4_FORM_THERMS" : "I ́ve read the <a class=\"text-green\">Privacy Policy</a> settings and i accept to receive news, comunications and promotions from MyGon",
+            "STEP_NEXT_BTN" : "NEXT",
+            "STEP_RESERVE_BTN" : "BOOK NOW"
+        };
+
+    var locales_ES = {
+            "STEP_0_TITLE" : "How many?",
+            "STEP_1_TITLE" : "When?",
+            "STEP_2_TITLE" : "What time?",
             "STEP_3_TITLE" : "Fulfill personal data to complete:",
             "STEP_3_SUBTITLE" : "Already have a Mygon account? <span class='text-green newlogin' style='cursor:pointer'>Click here</span>",
             "STEP_3_FORM_NAME" : "Name",
@@ -62,6 +79,7 @@
             "STEP_RESERVE_BTN" : "BOOK NOW"
         };
 
+
     var locales = undefined
 
     var StepsVO = [];
@@ -72,14 +90,36 @@
 		//Get Language params
         var urlParams = new URLSearchParams(window.location.search);
         var lang = urlParams.get('lang');
-        if( lang === 'en' ){
-            //#0.2 - get locales
-            locales = locales_EN;
-        }else{
-            locales = locales_PT;
+        //#0.2 - get locales
+        switch (lang) {
+            case 'pt':
+                locales = locales_PT;
+                break;
+            case 'es':
+                locales = locales_ES;       
+                break;
+            case 'en':
+                locales = locales_EN;
+                break;
+        
+            default:
+                locales = locales_EN;
+                break;
         }
+        
+        //#0 - Get Cookie for ID campaign
+        var campaignIdRequested = urlParams.get('id');
+        var cookieCampaign = getCookie('campaignId');
+        if(campaignIdRequested != null && campaignIdRequested != 'undefined' && cookieCampaign !== campaignIdRequested){
+            //#If is different campaigns, reset cookie form
+            var formValue = '';
+            setCookie('form', formValue);
+            setCookie('campaignId', campaignIdRequested);    
+        }
+        
 
-        //#0 - Get reservation config from cookie
+
+        //#1 - Get reservation config from cookie
         cookieValue = getCookie('values');
         if(cookieValue){
             cookieValue = JSON.parse(cookieValue);
@@ -119,8 +159,8 @@
 
         }
 
-         //#3 - Fulfiil form with cookie values
-         try {
+        //#3 - Fulfiil form with cookie values 
+        try {
 
             //#3.0 - Disable Dates
             if(StepsVO[1].disabledDates && StepsVO[1].disabledDates.length > 0){
@@ -138,13 +178,8 @@
                   //Step 3
             $('#email').val(StepsVO[3].email);       //Step 3
 
-            //#3.1.1 - If user is loggedIn, then name will appear in step 4
-        //    if(StepsVO[3].loggedin){
-                $('#name_logged').val(StepsVO[3].name); //Step 4 using step 3 value
-          //  }else{
-                //otherwise hide name input in step 4
-            //  $('#name_logged').css('display', 'none');
-        //    }
+            //#3.1.1 - If user is loggedIn, then name will appear in step 4        
+            $('#name_logged').val(StepsVO[3].name); //Step 4 using step 3 value  
 
             //#3.1.2 - Hide therms if logged
             if(StepsVO[3].loggedin){
@@ -183,7 +218,7 @@
         $(document).on('click','.newlogin',function(){
             if(thecurrent > 0){
                 setCookie('tobecurrent', thecurrent);
-                //parent.newLogin();
+                parent.newLogin();
             }
         });
 
@@ -212,9 +247,9 @@
         $('#step-3-next').text( getLocale('STEP_NEXT_BTN') );
         $('#step-4-reserve').text( getLocale('STEP_RESERVE_BTN') );
 
-		//#6 - Check for cookie form
+		//#6 - Check for cookie form 
         cookieFormValue = getCookie('form');
-        if(cookieFormValue){
+        if(cookieFormValue != ""){
             cookieFormValue = JSON.parse(cookieFormValue);
 
             //#6.1 - set form with last cookie value
@@ -361,28 +396,49 @@
     }
 
     //#D - Function to acceptTherms
-    function acceptTherms(){
+    function acceptTherms(inputChanges = false){
+        var fieldsFulfilled = ($('#email').val() !== '') && ($('#password').val() !== '')
         var isAccepted = $('#therms-and-conditions').data('accepted') === 'true';
         if(isAccepted){
             //uncheck it
             $('#therms-and-conditions').addClass('fa-square-o');
             $('#therms-and-conditions').removeClass('fa-check-square-o');
             $('#therms-and-conditions').data('accepted', 'false');
-
-            //Dont Allow Finish
-            $('#step-3-next').addClass('disabled');
-
+        
         }else{
             //check it
             $('#therms-and-conditions').removeClass('fa-square-o');
             $('#therms-and-conditions').addClass('fa-check-square-o');
             $('#therms-and-conditions').data('accepted', 'true');
+        }
+        
+        
 
+        if(!isAccepted && fieldsFulfilled){
             //Allow Finish
             $('#step-3-next').removeClass('disabled');
-        }
+        }else{
+            //Dont Allow Finish
+            $('#step-3-next').addClass('disabled');
 
+        }
     }
+
+    //#on change form personal data
+    function onChangeCredentials(){
+        var fieldsFulfilled = ($('#email').val() !== '') && ($('#password').val() !== '')
+        var isAccepted = $('#therms-and-conditions').data('accepted') === 'true';
+        
+        if(isAccepted && fieldsFulfilled){
+            //Allow Finish
+            $('#step-3-next').removeClass('disabled');
+        }else{
+            //Dont Allow Finish
+            $('#step-3-next').addClass('disabled');
+
+        }
+    }
+
 
     //#E - Navigate to Step
     function navigateToStep(targetId, recovering){
@@ -950,10 +1006,10 @@
                <!--    <input type="name" class="input-form" id="name" placeholder="Name">-->
             </div>
             <div class="col-xs-8 col-xs-offset-2 form-input-custom">
-               <input type="email" class="input-form" id="email" placeholder="E-mail">
+               <input type="email" class="input-form" id="email" placeholder="E-mail" onchange="onChangeCredentials()">
             </div>
             <div class="col-xs-8 col-xs-offset-2 form-input-custom">
-               <input type="password" class="input-form" id="password" placeholder="Password">
+               <input type="password" class="input-form" id="password" placeholder="Password" onchange="onChangeCredentials()">
             </div>
 			
 			<div class=" col-xs-12 therms">
