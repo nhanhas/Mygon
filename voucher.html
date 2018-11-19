@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" type="text/css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/locale/pt.js"></script>
+
+  <script type="text/javascript" src="libs/date-picker/js/bootstrap-datetimepicker.min.js"></script>
+  <link rel="stylesheet" href="libs/date-picker/css/bootstrap-datetimepicker.min.css" />
+
+  <script>
+    var thecurrent=0;
+    var locales_PT = {
+            "STEP_0_TITLE" : "Quantas pessoas serão?",
+            "STEP_1_TITLE" : "Para quando?",
+            "STEP_2_TITLE" : "A que horas?",
+            "STEP_3_TITLE" : "Para concluir regista-te gratuitamente na Mygon.",
+            "STEP_3_SUBTITLE" : "Já tens uma conta Mygon? <span class='text-green newlogin' style='cursor:pointer'>Clica aqui</a>",
+            "STEP_3_FORM_NAME" : "Nome",
+            "STEP_3_FORM_EMAIL" : "E-mail",
+            "STEP_3_FORM_PASSWORD" : "Escolhe uma password",
+            "STEP_4_TITLE" : "Para caso o comerciante ou a nossa linha de apoio precise de te ligar por favor indica o teu nome e nº de telemóvel.",
+            "STEP_4_FORM_PHONE" : "Telemóvel",
+            "STEP_4_FORM_COMMENTS" : "Notas para o comerciante...",
+            "STEP_4_FORM_THERMS" : "Li e aceito a <a class=\"text-green\">Política de privacidade</a> e aceito receber novidades, comunicações e promoções da MyGon",
+            "STEP_NEXT_BTN" : "SEGUINTE",
+            "STEP_RESERVE_BTN" : "RESERVAR"
+        };
+
+    var locales_EN = {
+            "STEP_0_TITLE" : "How many?",
+            "STEP_1_TITLE" : "When?",
+            "STEP_2_TITLE" : "What time?",
+            "STEP_3_TITLE" : "To complete the booking, register for free in Mygon.",
+            "STEP_3_SUBTITLE" : "Already have a Mygon account? <span class='text-green newlogin' style='cursor:pointer'>Click here</span>",
+            "STEP_3_FORM_NAME" : "Name",
+            "STEP_3_FORM_EMAIL" : "E-mail",
+            "STEP_3_FORM_PASSWORD" : "Choose a password",
+            "STEP_4_TITLE" : "In case the merchant or our support line needs to call you please indicate your name and mobile phone number.",
+            "STEP_4_FORM_PHONE" : "Mobile",
+            "STEP_4_FORM_COMMENTS" : "Notes for merchant...",
+            "STEP_4_FORM_THERMS" : "I ́ve read the <a class=\"text-green\">Privacy Policy</a> settings and i accept to receive news, comunications and promotions from MyGon",
+            "STEP_NEXT_BTN" : "NEXT",
+            "STEP_RESERVE_BTN" : "BOOK NOW"
+        };
+
+    var locales_ES = {
+            "STEP_0_TITLE" : "¿Cuántas personas serán?",
+            "STEP_1_TITLE" : "¿Cuando?",
+            "STEP_2_TITLE" : "¿Qué hora?",
+            "STEP_3_TITLE" : "Para concluir registre-te gratuitamente en Mygon.",
+            "STEP_3_SUBTITLE" : "¿Ya tienes una cuenta Mygon? <span class='text-green newlogin' style='cursor:pointer'>Haz clic aquí.</span>",
+            "STEP_3_FORM_NAME" : "Nombre",
+            "STEP_3_FORM_EMAIL" : "E-mail",
+            "STEP_3_FORM_PASSWORD" : "Seleccione la contraseña",
+            "STEP_4_TITLE" : "Para caso el comerciante o nuestra línea de apoyo necesite de te llamar por favor, indica tu nombre y número móvil.",
+            "STEP_4_FORM_PHONE" : "Mobile",
+            "STEP_4_FORM_COMMENTS" : "Notas para el merchant ...",
+            "STEP_4_FORM_THERMS" : "He leído el <a class=\"text-green\">Privacy Policy</a> Configuraciones y acepto recibir noticias, comunicaciones y promociones de MyGon.",
+            "STEP_NEXT_BTN" : "SIGUIENTE",
+            "STEP_RESERVE_BTN" : "RESERVAR AHORA"
+        };
+
+
+    var locales = undefined
+
+    var StepsVO = [];
+	jQuery(document).ready(function() {
+		
+		//Get Language params
+        var urlParams = new URLSearchParams(window.location.search);
+        var lang = urlParams.get('lang');
+        //#0.2 - get locales
+        switch (lang) {
+            case 'pt':
+                locales = locales_PT;
+                break;
+            case 'es':
+                locales = locales_ES;       
+                break;
+            case 'en':
+                locales = locales_EN;
+                break;
+        
+            default:
+                locales = locales_EN;
+                break;
+        }
+        
+       
+        //#1 - Draw form
+        drawForm();
+
+	});
+
+	//#LOCALE
+    function getLocale(key){
+        return locales[key];
+    }
+
+    //#A - Draw Available Breadcrumbs and Form views
+    function drawForm(){
+        //#1 - Set first step as visible
+        document.getElementById('step-0').style.display = 'flex';
+
+    }
+
+    //#B - Draw content of dynamic forms
+    function drawDynamicForms(){      
+
+    }
+
+    //#C - Next step function
+    function nextStep(currentId){
+
+        
+    }
+
+    //#E - Navigate to Step
+    function navigateToStep(targetId, recovering){
+
+      
+    }
+
+    //#F - Function to Get Browser Cookies
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
+</script>
+
+<style>
+    /*TEXT COLORS*/
+    .text-white{
+        color:white;
+    }
+
+    .text-green{
+        color: #2ec66f;
+    }
+
+
+    .text-gray-light h3,h3 {
+        color: #4B4B4B;
+        font-size: 16px;
+    }
+    #step-4 h3 {
+        margin-bottom: 30px !important;
+    }
+
+    .disabled{
+        pointer-events: none;
+        background-color: #2ec66f75 !important;
+    }
+
+    .steps-container{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    .step-item{
+        max-height: 50px;
+        background-color: #e6e6e6;
+        width: 100%;
+        padding: 10px 0px;
+        cursor: pointer;
+        pointer-events: none;
+
+    }
+
+    .step-item:not(:first-child), .step-item:not(:last-child){
+        -webkit-clip-path: polygon(95% 0, 100% 50%, 95% 100%, 0% 100%, 5% 50%, 0% 0%);
+        clip-path: polygon(95% 0, 100% 50%, 95% 100%, 0% 100%, 5% 50%, 0% 0%);
+    }
+
+    .step-item:first-child{
+        -webkit-clip-path: polygon(0 0, 0 100%, 95% 100%, 100% 50%, 95% 0);
+        clip-path: polygon(0 0, 0 100%, 95% 100%, 100% 50%, 95% 0);
+    }
+
+    .step-item:last-child{
+        -webkit-clip-path: polygon(95% 0, 100% 50%, 95% 100%, 0% 100%, 5% 50%, 0% 0%);
+        clip-path: polygon(100% 0%, 100% 50%, 100% 100%, 0% 100%, 5% 50%, 0% 0%);
+    }
+
+    .step-item-value{
+        color:white;
+        display: none;
+    }
+
+    .step-visited{
+        background-color: #808080;
+        pointer-events: initial;
+        display: flex !important;
+        flex-direction: column;
+    }
+
+
+    .step-form{
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        display:none;/*begin as invisible*/
+    }
+
+    .step-btn-next, .step-btn-finish {
+    cursor: pointer;
+    background-color: #2ec66f;
+    width: 220px;
+    padding: 10px;
+    font-size: 20px;
+    margin-top: 20px;
+}
+
+    .close-btn{
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        color: #808080;
+    }
+    .close-btn span{
+        cursor: pointer;
+    }
+
+    /* STEP 0 CSS */
+    .step-0-how-many{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .how-many-label{
+        width: 150px;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #bfbfbf;
+    }
+    #step-content-0{
+        width:100%;
+        margin: 30px 0;
+    }
+    .step-option-0{
+        cursor: pointer;
+        text-align: center;
+        width: 100px;
+        height: 50px;
+        border: 1px solid #80808057;
+        display: inline-block;
+        border-radius: 7px;
+        padding-top: 15px;
+        margin: 5px;
+        color: #808080;
+        font-weight: bold;
+    }
+
+    .step-option-0-selected{
+        background-color: #808080;
+        color: white;
+    }
+
+    /* STEP 1 CSS */
+    #step-content-1{
+        width:80%;
+        margin: 30px 0;
+    }
+
+    /* STEP 2 CSS */
+    #step-content-2{
+        width:100%;
+        margin: 30px 0;
+    }
+    .step-option-2{
+        cursor: pointer;
+        text-align: center;
+        width: 100px;
+        height: 50px;
+        border: 1px solid #80808057;
+        display: inline-block;
+        border-radius: 7px;
+        padding-top: 15px;
+        margin: 5px;
+        color: #808080;
+        font-weight: bold;
+    }
+
+    .step-option-2-selected{
+        background-color: #808080;
+        color: white;
+    }
+
+    .day.disabled ,.prev.disabled{
+        background-color: #dcdcdc1c !important;
+        color: #7777772b !important;
+    }
+
+    .day.today{
+        color: #2ec66f !important;
+    }
+
+    .day.active{
+        background-color: red !important;
+        color:white !important;
+    }
+
+    .day:hover{
+        background-color: red !important;
+        color:white !important;
+    }
+
+    /* STEP 3 CSS */
+    #step-content-3{
+        width: 100%;
+    }
+
+    .input-form{
+        border-style: none;
+        border-bottom: 1px solid #80808080;
+        width: 100%;
+    }
+    .input-form:focus{
+        outline: none;
+
+    }
+
+    .form-input-custom{
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    /* STEP 4 CSS */
+    #step-content-4 {
+    width: 100%;
+    margin: 0px;
+    max-width: 800px;
+}
+
+
+    .form-input-custom-inline{
+        display: flex;
+        margin: 30px;
+        flex-direction: row;
+    }
+
+
+
+    .input-form-note{
+        border-style: none;
+        border: 1px solid #80808080;
+        width: 100%;
+    }
+    .input-form-note:focus{
+        outline: none;
+
+    }
+
+    .therms{
+        margin:30px 0;
+
+    }
+    .therms span i{
+        cursor: pointer
+    }
+
+    .name-step-4{
+        margin: 0 30px;
+    }
+
+    .select-prefix{
+        width: 150px;
+        border-style: none;
+        background-color: white;
+        border-image: none;
+        border-width: 0px;
+        border-color: white;
+        border-bottom: 1px solid #bfbfbf;
+        border-radius: 0;
+        -webkit-appearance: none;
+    }
+    .select-prefix:focus{
+        outline: none;
+    }
+
+    .select-input{
+        position: relative;
+    }
+    .select-icon{
+        position: absolute;
+        top: 0;
+        right: 0;
+        color: grey;
+    }
+
+</style>
+
+
+</head>
+
+<body>
+   <div id="sumario" style="margin: 50px 30px 0 30px;">
+   
+   <!-- Steps Breadcrumb-->
+   <div class="steps-container">
+      <div id="step-item-0" class="step-item text-center step-visited" onclick="navigateToStep(0)">
+         <span><i id ="step-item-fa-0" class="fa fa-users fa-2x text-white"></i></span>
+         <span id="step-item-value-0" class="step-item-value"></span>
+      </div>
+      <div id="step-item-1" class="step-item text-center" onclick="navigateToStep(1)">
+         <span><i id ="step-item-fa-1" class="fa fa-check-circle fa-2x text-white"></i></span>
+         <span id="step-item-value-1" class="step-item-value"></span>
+      </div>
+   </div>
+   <!-- Step Forms -->
+   <div class="step-form-container">
+      <!-- Step id 0: How many? -->
+      <div id="step-0" class="step-form">
+         <h3 id="step-0-title">Details of the offer</h3>
+
+         <!-- #TEMPLATE# -->
+         <input type="hidden" id="how-many" value="0">
+         <div id="step-content-0">
+
+            <!-- how many? -->
+            <div class="step-0-how-many">
+                
+                <span class="how-many-label">How many people?</span>
+                <!-- prefix -->
+                <div class="select-input">
+                    <select name="how-many" id="how-many" class="select-prefix">
+                        <option value="1">1</option>
+                    </select>
+                    <span class="select-icon"><i class="fa fa-chevron-down"></i></span>
+                </div>
+            </div>
+
+            <!-- Who's offer -->
+            <div class="step-0-whos-offer"></div>
+
+         </div>
+
+         <!-- Next button -->
+         <div class="step-btn-next text-white" onclick="nextStep(0)">
+            MAKE PAYMENT
+          </div>
+      </div>
+      <!-- Step id 1: When? -->
+      <div id="step-1" class="step-form">
+         <h3 id="step-1-title">Para quando?</h3>
+         <!-- #TEMPLATE# -->
+         <div id="step-content-1">
+         </div>
+         <!-- Next button
+            <div class="step-btn-next text-white" onclick="nextStep(1)">
+                SEGUINTE
+            </div>-->
+      </div>
+  
+   </div>
+   <div>
+</body>
