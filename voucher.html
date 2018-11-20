@@ -19,54 +19,36 @@
   <script>
     var thecurrent=0;
     var locales_PT = {
-            "STEP_0_TITLE" : "Quantas pessoas serão?",
-            "STEP_1_TITLE" : "Para quando?",
-            "STEP_2_TITLE" : "A que horas?",
-            "STEP_3_TITLE" : "Para concluir regista-te gratuitamente na Mygon.",
-            "STEP_3_SUBTITLE" : "Já tens uma conta Mygon? <span class='text-green newlogin' style='cursor:pointer'>Clica aqui</a>",
-            "STEP_3_FORM_NAME" : "Nome",
-            "STEP_3_FORM_EMAIL" : "E-mail",
-            "STEP_3_FORM_PASSWORD" : "Escolhe uma password",
-            "STEP_4_TITLE" : "Para caso o comerciante ou a nossa linha de apoio precise de te ligar por favor indica o teu nome e nº de telemóvel.",
-            "STEP_4_FORM_PHONE" : "Telemóvel",
-            "STEP_4_FORM_COMMENTS" : "Notas para o comerciante...",
-            "STEP_4_FORM_THERMS" : "Li e aceito a <a class=\"text-green\">Política de privacidade</a> e aceito receber novidades, comunicações e promoções da MyGon",
-            "STEP_NEXT_BTN" : "SEGUINTE",
+            "STEP_0_TITLE" : "Detalhes da oferta",
+            "STEP_1_TITLE" : "Pagamento efetuado com sucesso",         
+            "STEP_0_FORM_HOWMANY" : "Quantas pessoas?",
+            "STEP_0_FORM_WHOS_OFFER" : "De que é a oferta?",
+            "STEP_0_FORM_ON_BEHALF" : "Em nome de?",
+            "STEP_1_SUBTITLE" : "Nas próximas 48h receberá um coupão por email para poder oferecer.",
+            "STEP_NEXT_BTN" : "EFETUAR PAGAMENTO",
             "STEP_RESERVE_BTN" : "RESERVAR"
         };
 
     var locales_EN = {
-            "STEP_0_TITLE" : "How many?",
-            "STEP_1_TITLE" : "When?",
-            "STEP_2_TITLE" : "What time?",
-            "STEP_3_TITLE" : "To complete the booking, register for free in Mygon.",
-            "STEP_3_SUBTITLE" : "Already have a Mygon account? <span class='text-green newlogin' style='cursor:pointer'>Click here</span>",
-            "STEP_3_FORM_NAME" : "Name",
-            "STEP_3_FORM_EMAIL" : "E-mail",
-            "STEP_3_FORM_PASSWORD" : "Choose a password",
-            "STEP_4_TITLE" : "In case the merchant or our support line needs to call you please indicate your name and mobile phone number.",
-            "STEP_4_FORM_PHONE" : "Mobile",
-            "STEP_4_FORM_COMMENTS" : "Notes for merchant...",
-            "STEP_4_FORM_THERMS" : "I ́ve read the <a class=\"text-green\">Privacy Policy</a> settings and i accept to receive news, comunications and promotions from MyGon",
-            "STEP_NEXT_BTN" : "NEXT",
-            "STEP_RESERVE_BTN" : "BOOK NOW"
+            "STEP_0_TITLE" : "Details of the offer",
+            "STEP_1_TITLE" : "Payment made successfully",         
+            "STEP_0_FORM_HOWMANY" : "How many people?",
+            "STEP_0_FORM_WHOS_OFFER" : "Who's offering?",
+            "STEP_0_FORM_ON_BEHALF" : "On behalf of?",
+            "STEP_1_SUBTITLE" : "Within the next 48 hours you will receive the voucher by email to be able to offer.",
+            "STEP_NEXT_BTN" : "MAKE PAYMENT",
+            "STEP_RESERVE_BTN" : "RESERVAR"
         };
 
     var locales_ES = {
-            "STEP_0_TITLE" : "¿Cuántas personas serán?",
-            "STEP_1_TITLE" : "¿Cuando?",
-            "STEP_2_TITLE" : "¿Qué hora?",
-            "STEP_3_TITLE" : "Para concluir registre-te gratuitamente en Mygon.",
-            "STEP_3_SUBTITLE" : "¿Ya tienes una cuenta Mygon? <span class='text-green newlogin' style='cursor:pointer'>Haz clic aquí.</span>",
-            "STEP_3_FORM_NAME" : "Nombre",
-            "STEP_3_FORM_EMAIL" : "E-mail",
-            "STEP_3_FORM_PASSWORD" : "Seleccione la contraseña",
-            "STEP_4_TITLE" : "Para caso el comerciante o nuestra línea de apoyo necesite de te llamar por favor, indica tu nombre y número móvil.",
-            "STEP_4_FORM_PHONE" : "Mobile",
-            "STEP_4_FORM_COMMENTS" : "Notas para el merchant ...",
-            "STEP_4_FORM_THERMS" : "He leído el <a class=\"text-green\">Privacy Policy</a> Configuraciones y acepto recibir noticias, comunicaciones y promociones de MyGon.",
-            "STEP_NEXT_BTN" : "SIGUIENTE",
-            "STEP_RESERVE_BTN" : "RESERVAR AHORA"
+        "STEP_0_TITLE" : "Detalhes da oferta",
+            "STEP_1_TITLE" : "Pagamento efetuado com sucesso",         
+            "STEP_0_FORM_HOWMANY" : "Quantas pessoas?",
+            "STEP_0_FORM_WHOS_OFFER" : "De que é a oferta?",
+            "STEP_0_FORM_ON_BEHALF" : "Em nome de?",
+            "STEP_1_SUBTITLE" : "Nas próximas 48h receberá um coupão por email para poder oferecer.",
+            "STEP_NEXT_BTN" : "EFETUAR PAGAMENTO",
+            "STEP_RESERVE_BTN" : "RESERVAR"
         };
 
 
@@ -95,7 +77,14 @@
                 break;
         }
         
-       
+        //#0 - Apply locales
+        $('#step-0-title').text( getLocale('STEP_0_TITLE') );
+        $('#step-1-title').text( getLocale('STEP_1_TITLE') );
+        $('.how-many-label').text( getLocale('STEP_0_FORM_HOWMANY') );
+        $('#who').attr('placeholder', ( getLocale('STEP_0_FORM_WHOS_OFFER') ));
+        $('#on-balf-of').attr('placeholder', ( getLocale('STEP_0_FORM_ON_BEHALF') ));
+        $('#pay-btn').text( getLocale('STEP_NEXT_BTN') );
+        $('#step-1-subtitle').text( getLocale('STEP_1_SUBTITLE') );
         //#1 - Draw form
         drawForm();
 
@@ -119,16 +108,16 @@
     }
 
     //#C - Next step function
-    function nextStep(currentId){
+    function makePayment(currentId){
 
+        //#TODO - make request of payment
         
+        //#Finally show result
+        $('#step-item-1').addClass('step-visited');
+        document.getElementById('step-0').style.display = 'none';
+        document.getElementById('step-1').style.display = 'flex';
     }
 
-    //#E - Navigate to Step
-    function navigateToStep(targetId, recovering){
-
-      
-    }
 
     //#F - Function to Get Browser Cookies
     function getCookie(cname) {
@@ -183,7 +172,6 @@
         background-color: #e6e6e6;
         width: 100%;
         padding: 10px 0px;
-        cursor: pointer;
         pointer-events: none;
 
     }
@@ -249,6 +237,13 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        margin: 20px;
+    }
+    .step-0-whos-offer{
+        padding: 17px;
+    }
+    .step-0-whos-offer input:nth-of-type(1){
+        margin-bottom: 20px;
     }
     .how-many-label{
         width: 150px;
@@ -258,6 +253,9 @@
     #step-content-0{
         width:100%;
         margin: 30px 0;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
     }
     .step-option-0{
         cursor: pointer;
@@ -420,11 +418,11 @@
    
    <!-- Steps Breadcrumb-->
    <div class="steps-container">
-      <div id="step-item-0" class="step-item text-center step-visited" onclick="navigateToStep(0)">
+      <div id="step-item-0" class="step-item text-center step-visited">
          <span><i id ="step-item-fa-0" class="fa fa-users fa-2x text-white"></i></span>
          <span id="step-item-value-0" class="step-item-value"></span>
       </div>
-      <div id="step-item-1" class="step-item text-center" onclick="navigateToStep(1)">
+      <div id="step-item-1" class="step-item text-center">
          <span><i id ="step-item-fa-1" class="fa fa-check-circle fa-2x text-white"></i></span>
          <span id="step-item-value-1" class="step-item-value"></span>
       </div>
@@ -453,25 +451,26 @@
             </div>
 
             <!-- Who's offer -->
-            <div class="step-0-whos-offer"></div>
+            <div class="step-0-whos-offer">
+                <input type="text" class="input-form" id="who" placeholder="Who?">
+                <input type="text" class="input-form" id="on-balf-of" placeholder="On behalf of?">
+            </div>
 
          </div>
 
          <!-- Next button -->
-         <div class="step-btn-next text-white" onclick="nextStep(0)">
+         <div id="pay-btn" class="step-btn-next text-white" onclick="makePayment()">
             MAKE PAYMENT
           </div>
       </div>
       <!-- Step id 1: When? -->
       <div id="step-1" class="step-form">
-         <h3 id="step-1-title">Para quando?</h3>
+         <h3 id="step-1-title">Payment made successfully</h3>
          <!-- #TEMPLATE# -->
          <div id="step-content-1">
+            <h3 id="step-1-subtitle">Payment made successfully</h3>
          </div>
-         <!-- Next button
-            <div class="step-btn-next text-white" onclick="nextStep(1)">
-                SEGUINTE
-            </div>-->
+         
       </div>
   
    </div>
