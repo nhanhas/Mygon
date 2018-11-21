@@ -20,9 +20,9 @@
     var thecurrent=0;
     var locales_PT = {
             "STEP_0_TITLE" : "Detalhes da oferta",
-            "STEP_1_TITLE" : "Pagamento efetuado com sucesso",         
+            "STEP_1_TITLE" : "Pagamento efetuado com sucesso",
             "STEP_0_FORM_HOWMANY" : "Quantas pessoas?",
-            "STEP_0_FORM_WHOS_OFFER" : "De que é a oferta?",
+            "STEP_0_FORM_WHOS_OFFER" : "De quem é a oferta?",
             "STEP_0_FORM_ON_BEHALF" : "Em nome de?",
             "STEP_1_SUBTITLE" : "Nas próximas 48h receberá um coupão por email para poder oferecer.",
             "STEP_NEXT_BTN" : "EFETUAR PAGAMENTO",
@@ -31,7 +31,7 @@
 
     var locales_EN = {
             "STEP_0_TITLE" : "Details of the offer",
-            "STEP_1_TITLE" : "Payment made successfully",         
+            "STEP_1_TITLE" : "Payment made successfully",
             "STEP_0_FORM_HOWMANY" : "How many people?",
             "STEP_0_FORM_WHOS_OFFER" : "Who's offering?",
             "STEP_0_FORM_ON_BEHALF" : "On behalf of?",
@@ -42,7 +42,7 @@
 
     var locales_ES = {
         "STEP_0_TITLE" : "Detalhes da oferta",
-            "STEP_1_TITLE" : "Pagamento efetuado com sucesso",         
+            "STEP_1_TITLE" : "Pagamento efetuado com sucesso",
             "STEP_0_FORM_HOWMANY" : "Quantas pessoas?",
             "STEP_0_FORM_WHOS_OFFER" : "De que é a oferta?",
             "STEP_0_FORM_ON_BEHALF" : "Em nome de?",
@@ -56,9 +56,24 @@
 
     var StepsVO = [];
 	jQuery(document).ready(function() {
-		
+
+    try {
+        model = JSON.parse(localStorage.model);
+        if(localStorage.mygon_user_id!="" && localStorage.mygon_user_id!=0 )
+            logged =  true;
+        else
+            logged = false;
+    } catch (error) {
+        logged = false;
+    }    
+    
+  var urlParams = new URLSearchParams(window.location.search);
+    var campaignIdRequested = urlParams.get('id');
+    var cookieCampaign = localStorage.campaignId;
+
+
 		//Get Language params
-        var urlParams = new URLSearchParams(window.location.search);
+
         var lang = urlParams.get('lang');
         //#0.2 - get locales
         switch (lang) {
@@ -66,25 +81,43 @@
                 locales = locales_PT;
                 break;
             case 'es':
-                locales = locales_ES;       
+                locales = locales_ES;
                 break;
             case 'en':
                 locales = locales_EN;
                 break;
-        
+
             default:
                 locales = locales_EN;
                 break;
         }
-        
+
+
+        //#1 - Get reservation config from cookie
+        cookieValue = localStorage.values;
+        if(cookieValue){
+            cookieValue = JSON.parse(cookieValue);
+            console.log(cookieValue);
+            //#0.1 - Set up Steps with received
+            StepsVO = cookieValue;
+          }
+
+        for(var i=1;i<=1;i++){
+          var o = new Option(i, i);
+            /// jquerify the DOM object 'o' so we can use the html method
+            $(o).html(i);
+            $("#how-many").append(o);
+        }
+
+
         //#0 - Apply locales
         $('#step-0-title').text( getLocale('STEP_0_TITLE') );
-        $('#step-1-title').text( getLocale('STEP_1_TITLE') );
+        $('#step-2-title').text( getLocale('STEP_1_TITLE') );
         $('.how-many-label').text( getLocale('STEP_0_FORM_HOWMANY') );
         $('#who').attr('placeholder', ( getLocale('STEP_0_FORM_WHOS_OFFER') ));
         $('#on-balf-of').attr('placeholder', ( getLocale('STEP_0_FORM_ON_BEHALF') ));
         $('#pay-btn').text( getLocale('STEP_NEXT_BTN') );
-        $('#step-1-subtitle').text( getLocale('STEP_1_SUBTITLE') );
+        $('#step-2-subtitle').text( getLocale('STEP_1_SUBTITLE') );
         //#1 - Draw form
         drawForm();
 
@@ -103,10 +136,11 @@
     }
 
     //#B - Draw content of dynamic forms
-    function drawDynamicForms(){      
+    function drawDynamicForms(){
 
     }
 
+    var checkTimer = undefined;
     //#C - Next step function
     function makePayment(currentId){
 
@@ -115,7 +149,24 @@
         //#Finally show result
         $('#step-item-1').addClass('step-visited');
         document.getElementById('step-0').style.display = 'none';
+        
         document.getElementById('step-1').style.display = 'flex';
+
+
+        //#set timer
+        checkTimer = setInterval(checkPayment,2000);
+    }
+
+    function checkPayment(){
+        if(true){
+            clearInterval(checkTimer);
+            document.getElementById('step-1').style.display = 'none';
+            document.getElementById('step-2').style.display = 'flex';
+            console.log("paid");
+        }else{
+            console.log("not paid");
+        }
+
     }
 
 
@@ -137,7 +188,7 @@
 
 </script>
 
-<style>
+  <style>
     /*TEXT COLORS*/
     .text-white{
         color:white;
@@ -279,7 +330,7 @@
     /* STEP 1 CSS */
     #step-content-1{
         width:80%;
-        margin: 30px 0;
+        margin: 90px 0;
     }
 
     /* STEP 2 CSS */
@@ -414,65 +465,71 @@
 </head>
 
 <body>
-   <div id="sumario" style="margin: 50px 30px 0 30px;">
-   
-   <!-- Steps Breadcrumb-->
-   <div class="steps-container">
+  <div id="sumario" style="margin: 50px 30px 0 30px;">
+
+    <!-- Steps Breadcrumb-->
+    <div class="steps-container">
       <div id="step-item-0" class="step-item text-center step-visited">
-         <span><i id ="step-item-fa-0" class="fa fa-users fa-2x text-white"></i></span>
-         <span id="step-item-value-0" class="step-item-value"></span>
+        <span><i id ="step-item-fa-0" class="fa fa-users fa-2x text-white"></i></span>
+        <span id="step-item-value-0" class="step-item-value"></span>
       </div>
       <div id="step-item-1" class="step-item text-center">
-         <span><i id ="step-item-fa-1" class="fa fa-check-circle fa-2x text-white"></i></span>
-         <span id="step-item-value-1" class="step-item-value"></span>
+        <span><i id ="step-item-fa-1" class="fa fa-check-circle fa-2x text-white"></i></span>
+        <span id="step-item-value-1" class="step-item-value"></span>
       </div>
-   </div>
-   <!-- Step Forms -->
-   <div class="step-form-container">
+    </div>
+    <!-- Step Forms -->
+    <div class="step-form-container">
       <!-- Step id 0: How many? -->
       <div id="step-0" class="step-form">
-         <h3 id="step-0-title">Details of the offer</h3>
+        <h3 id="step-0-title">Details of the offer</h3>
 
-         <!-- #TEMPLATE# -->
-         <input type="hidden" id="how-many" value="0">
-         <div id="step-content-0">
+        <!-- #TEMPLATE# -->
+        <!--  <input type="hidden" id="how-many" value="0">-->
+        <div id="step-content-0">
 
-            <!-- how many? -->
-            <div class="step-0-how-many">
-                
-                <span class="how-many-label">How many people?</span>
-                <!-- prefix -->
-                <div class="select-input">
-                    <select name="how-many" id="how-many" class="select-prefix">
-                        <option value="1">1</option>
-                    </select>
-                    <span class="select-icon"><i class="fa fa-chevron-down"></i></span>
-                </div>
+          <!-- how many? -->
+          <div class="step-0-how-many">
+
+            <span class="how-many-label">How many people?</span>
+            <!-- prefix -->
+            <div class="select-input">
+              <select name="how-many" id="how-many" class="select-prefix"></select>
+              <span class="select-icon"><i class="fa fa-chevron-down"></i></span>
             </div>
-
-            <!-- Who's offer -->
-            <div class="step-0-whos-offer">
-                <input type="text" class="input-form" id="who" placeholder="Who?">
-                <input type="text" class="input-form" id="on-balf-of" placeholder="On behalf of?">
-            </div>
-
-         </div>
-
-         <!-- Next button -->
-         <div id="pay-btn" class="step-btn-next text-white" onclick="makePayment()">
-            MAKE PAYMENT
           </div>
+
+          <!-- Who's offer -->
+          <div class="step-0-whos-offer">
+            <input type="text" class="input-form" id="who" placeholder="Who?">
+            <input type="text" class="input-form" id="on-balf-of" placeholder="On behalf of?">
+            </div>
+
+        </div>
+
+        <!-- Next button -->
+        <div id="pay-btn" class="step-btn-next text-white" onclick="makePayment()">
+          MAKE PAYMENT
+        </div>
       </div>
-      <!-- Step id 1: When? -->
-      <div id="step-1" class="step-form">
-         <h3 id="step-1-title">Payment made successfully</h3>
-         <!-- #TEMPLATE# -->
-         <div id="step-content-1">
-            <h3 id="step-1-subtitle">Payment made successfully</h3>
-         </div>
-         
+
+        <!-- loading -->
+      <div id="step-1" class="step-form">        
+        <!-- #TEMPLATE# -->
+        <div id="step-content-1">
+            <h3><i class="fa fa-spinner fa-spin fa-2x"></i></h3>
+        </div>
+        </div>
+
+      <!-- Step id 2: When? -->
+      <div id="step-2" class="step-form">
+        <h3 id="step-2-title">Payment made successfully</h3>
+        <!-- #TEMPLATE# -->
+        <div id="step-content-2">
+          <h3 id="step-2-subtitle">Payment made successfully</h3>
+        </div>
       </div>
-  
-   </div>
-   <div>
+
+    </div>
+    <div>
 </body>
